@@ -40,3 +40,37 @@ SELECT species, AVG(escape_attempts) AS avg_escape_attempts
 FROM animals
 WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31'
 GROUP BY species;
+
+-- Transaction 1: Update species to 'unspecified' and rollback
+BEGIN;
+UPDATE animals SET species = 'unspecified';
+-- Verify the change
+SELECT * FROM animals;
+-- Rollback
+ROLLBACK;
+
+-- Transaction 2: Update species based on name and commit
+BEGIN;
+UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
+UPDATE animals SET species = 'pokemon' WHERE species IS NULL;
+-- Verify the changes
+SELECT * FROM animals;
+-- Commit the transaction
+COMMIT;
+
+-- Transaction 3: Delete all records and rollback
+BEGIN;
+DELETE FROM animals;
+-- Verify if all records in the 'animals' table still exist (empty result set)
+SELECT * FROM animals;
+-- Rollback
+ROLLBACK;
+
+-- Transaction 4: Delete records, update weights, and commit
+BEGIN;
+DELETE FROM animals WHERE date_of_birth > '2022-01-01';
+SAVEPOINT my_savepoint;
+UPDATE animals SET weight_kg = weight_kg * -1;
+ROLLBACK TO my_savepoint;
+UPDATE animals SET weight_kg = weight_kg * -1 WHERE weight_kg < 0;
+COMMIT;
