@@ -48,7 +48,8 @@ UPDATE animals SET species = 'unspecified';
 SELECT * FROM animals;
 -- Rollback
 ROLLBACK;
-
+--verify
+SELECT * FROM animals;
 -- Transaction 2: Update species based on name and commit
 BEGIN;
 UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
@@ -57,6 +58,8 @@ UPDATE animals SET species = 'pokemon' WHERE species IS NULL;
 SELECT * FROM animals;
 -- Commit the transaction
 COMMIT;
+--verify
+SELECT * FROM animals;
 
 -- Transaction 3: Delete all records and rollback
 BEGIN;
@@ -65,7 +68,8 @@ DELETE FROM animals;
 SELECT * FROM animals;
 -- Rollback
 ROLLBACK;
-
+--verify
+SELECT * FROM animals;
 -- Transaction 4: Delete records, update weights, and commit
 BEGIN;
 DELETE FROM animals WHERE date_of_birth > '2022-01-01';
