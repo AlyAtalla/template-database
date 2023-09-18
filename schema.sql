@@ -1,4 +1,5 @@
-/* Database schema to keep the structure of entire database. */
+-- schema.sql
+
 CREATE TABLE animals (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
@@ -7,3 +8,6 @@ CREATE TABLE animals (
     neutered BOOLEAN,
     weight_kg DECIMAL(5, 2)
 );
+
+-- Add the 'species' column
+ALTER TABLE animals ADD COLUMN species VARCHAR(255);
