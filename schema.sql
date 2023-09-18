@@ -1,6 +1,5 @@
 -- schema.sql
 
--- Existing table definition
 CREATE TABLE animals (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
