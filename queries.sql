@@ -4,7 +4,7 @@ FROM animals
 INNER JOIN owners ON animals.owner_id = owners.id
 WHERE owners.full_name = 'Melody Pond';
 
--- List of all animals that are pokemon
+-- List of all animals that are Pokemon
 SELECT animals.name
 FROM animals
 INNER JOIN species ON animals.species_id = species.id

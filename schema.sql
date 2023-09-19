@@ -13,7 +13,6 @@ CREATE TABLE species (
 
 -- Modify the 'animals' table
 ALTER TABLE animals
-    DROP COLUMN species,
     ADD COLUMN species_id INT,
     ADD COLUMN owner_id INT,
     ADD CONSTRAINT fk_species FOREIGN KEY (species_id) REFERENCES species(id),
