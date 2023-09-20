@@ -37,16 +37,17 @@ CREATE TABLE vets (
 CREATE TABLE specializations (
     id SERIAL PRIMARY KEY,
     vet_id INT,
-    species_name VARCHAR(255),
-    FOREIGN KEY (vet_id) REFERENCES vets(id)
+    species_id INT,
+    FOREIGN KEY (vet_id) REFERENCES vets(id),
+    FOREIGN KEY (species_id) REFERENCES species(id)
 );
 
 -- Create the 'visits' table (for the many-to-many relationship between animals and vets)
 CREATE TABLE visits (
-    id SERIAL PRIMARY KEY,
     animal_id INT,
     vet_id INT,
     visit_date DATE,
     FOREIGN KEY (animal_id) REFERENCES animals(id),
-    FOREIGN KEY (vet_id) REFERENCES vets(id)
+    FOREIGN KEY (vet_id) REFERENCES vets(id),
+    PRIMARY KEY (animal_id, vet_id, visit_date)
 );
