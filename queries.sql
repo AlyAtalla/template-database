@@ -13,11 +13,18 @@ FROM visits v
 JOIN vets s ON v.vet_id = s.id
 WHERE s.name = 'Stephanie Mendez';
 
--- List all vets and their specialties, including vets with no specialties.
-SELECT v.name AS vet_name, sp.name AS specialty
-FROM vets v
-JOIN specializations s ON v.id = s.vet_id
-JOIN species sp ON s.species_id = sp.id;
+-- List all vets and their specialties, including vets with no specialties (removing duplicates and "Vet" prefix).
+SELECT DISTINCT ON (vet_name)
+       vet_name,
+       specialty
+FROM (
+    SELECT
+        CASE WHEN v.name LIKE 'Vet %' THEN SUBSTRING(v.name FROM 5) ELSE v.name END AS vet_name,
+        s.species_name AS specialty
+    FROM vets v
+    LEFT JOIN specializations s ON v.id = s.vet_id
+) AS vet_specialties
+ORDER BY vet_name, specialty;
 
 -- List all animals that visited Stephanie Mendez between April 1st and August 30th, 2020.
 SELECT a.name AS animal_name
@@ -47,7 +54,7 @@ ORDER BY v.visit_date
 LIMIT 1;
 
 -- Details for the most recent visit: animal information, vet information, and date of visit.
-SELECT a.name AS animal_name, ve.name AS vet_name, v.visit_date AS date_of_visit
+SELECT DISTINCT a.name AS animal_name, ve.name AS vet_name, v.visit_date AS date_of_visit
 FROM visits v
 JOIN animals a ON v.animal_id = a.id
 JOIN vets ve ON v.vet_id = ve.id
@@ -72,6 +79,7 @@ WITH MaisyVisits AS (
     ORDER BY visit_count DESC
     LIMIT 1
 )
-SELECT mv.species_id AS recommended_specialty_id, s.name AS recommended_specialty
+
+SELECT s.name AS recommended_specialty
 FROM MaisyVisits mv
 JOIN species s ON mv.species_id = s.id;
