@@ -37,15 +37,15 @@ FROM (SELECT animal_id, COUNT(*) AS visit_count
 JOIN animals a ON max_visits.animal_id = a.id;
 
 -- Who was Maisy Smith's first visit?
-SELECT v.name AS first_visit_vet
+SELECT m.name AS first_visit_vet
 FROM visits v
 JOIN vets m ON v.vet_id = m.id
 WHERE m.name = 'Vet Maisy Smith'
 ORDER BY v.visit_date
 LIMIT 1;
 
--- Details for most recent visit: animal information, vet information, and date of visit.
-SELECT a.name AS animal_name, v.name AS vet_name, v.visit_date AS date_of_visit
+-- Details for the most recent visit: animal information, vet information, and date of visit.
+SELECT a.name AS animal_name, ve.name AS vet_name, v.visit_date AS date_of_visit
 FROM visits v
 JOIN animals a ON v.animal_id = a.id
 JOIN vets ve ON v.vet_id = ve.id
@@ -55,5 +55,21 @@ WHERE v.visit_date = (SELECT MAX(visit_date) FROM visits);
 SELECT COUNT(*) AS num_visits
 FROM visits v
 JOIN vets ve ON v.vet_id = ve.id
-JOIN specializations s ON ve.id = s.vet_id
-JOIN animals a ON
+LEFT JOIN specializations s ON ve.id = s.vet_id
+JOIN animals a ON v.animal_id = a.id
+WHERE s.species_name IS NULL OR s.species_name <> (SELECT name FROM species WHERE id = a.species_id);
+
+-- What specialty should Vet Maisy Smith consider getting? Look for the species she gets the most.
+WITH VetMaisyVisits AS (
+    SELECT v.vet_id, a.species_id, COUNT(*) AS visit_count
+    FROM visits v
+    JOIN animals a ON v.animal_id = a.id
+    JOIN vets vet ON v.vet_id = vet.id
+    WHERE vet.name = 'Vet Maisy Smith'
+    GROUP BY v.vet_id, a.species_id
+    ORDER BY visit_count DESC
+    LIMIT 1
+)
+SELECT vms.species_id AS recommended_specialty_id, s.name AS recommended_specialty
+FROM VetMaisyVisits vms
+JOIN species s ON vms.species_id = s.id;
