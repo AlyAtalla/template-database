@@ -27,3 +27,14 @@ CREATE TABLE patients (
   name VARCHAR(255),
   date_of_birth DATE
 );
+
+CREATE TABLE invoice_items (
+  id SERIAL PRIMARY KEY,
+  unit_price DECIMAL,
+  quantity INT,
+  total_price DECIMAL,
+  invoice_id INT,
+  treatment_id INT,
+  FOREIGN KEY (invoice_id) REFERENCES invoices (id),
+  FOREIGN KEY (treatment_id) REFERENCES treatments (id)
+);
